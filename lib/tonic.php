@@ -590,6 +590,8 @@ class Resource {
     
     private $parameters;
     
+    protected $request;
+    
     /**
      * Resource constructor
      * @param str[] parameters Parameters passed in from the URL as matched from the URI regex
@@ -623,13 +625,12 @@ class Resource {
             in_array(strtoupper($request->method), $request->HTTPMethods) &&
             method_exists($this, $request->method)
         ) {
+            $this->request = $request;
             
             $method = new ReflectionMethod($this, $request->method);
             $parameters = array();
             foreach ($method->getParameters() as $param) {
-                if ($param->name == 'request') {
-                    $parameters[] = $request;
-                } elseif (isset($this->parameters[$param->name])) {
+                if (isset($this->parameters[$param->name])) {
                     $parameters[] = $this->parameters[$param->name];
                     unset($this->parameters[$param->name]);
                 } else {
