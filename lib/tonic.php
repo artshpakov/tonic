@@ -120,7 +120,7 @@ class Request {
     
     /**
      * Body data of incoming request
-     * @var str
+     * @var array
      */
     public $data;
     
@@ -298,7 +298,8 @@ class Request {
         $this->method = strtoupper($this->getConfig($config, 'method', 'REQUEST_METHOD', $this->method));
         
         // get HTTP request data
-        $this->data = $this->getConfig($config, 'data', NULL, file_get_contents("php://input"));
+        $data = $this->getConfig($config, 'data', NULL, file_get_contents("php://input"));
+        parse_str($data, $this->data);
         
         // conditional requests
         if ($config['ifMatch']) {
